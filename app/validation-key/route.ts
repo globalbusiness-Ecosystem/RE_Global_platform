@@ -1,0 +1,11 @@
+export async function GET() {
+  return new Response(
+    "4cebd374f27092bc43b7e8e67053a6c19828e2308f7c5ef79c29b4572be94e66199c2128aa0b4786a4263b5efeaf320a3fc052b23af787641fe535f3e86dcb0a",
+    {
+      status: 200,
+      headers: {
+        "Content-Type": "text/plain; charset=utf-8",
+      },
+    }
+  )
+}

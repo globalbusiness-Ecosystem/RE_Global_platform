@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>RE — منصة العقارات العالمية</title>
+<script src="https://sdk.minepi.com/pi-sdk.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#060608;--bg2:#0c0c12;--bg3:#11111a;--bg4:#161622;
+  --gold:#D4AF6A;--gold2:#F0D090;--gold-dim:rgba(212,175,106,0.15);
+  --teal:#2DD4BF;--teal-dim:rgba(45,212,191,0.12);
+  --pi:#7C3AED;--pi2:#A855F7;--pi-dim:rgba(124,58,237,0.15);
+  --green:#10B981;--red:#EF4444;
+  --text:#E8E4DC;--text2:#A09890;--text3:#5A5550;
+  --border:rgba(255,255,255,0.07);
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Tajawal',sans-serif;overflow-x:hidden}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-thumb{background:rgba(212,175,106,0.3);border-radius:3px}
+
+/* HEADER */
+.hdr{position:sticky;top:0;z-index:100;background:rgba(6,6,8,0.95);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);padding:0 1rem;height:56px;
+  display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:1.6rem;font-weight:800;color:var(--gold);letter-spacing:1px}
+.logo-sub{font-size:0.55rem;color:var(--text3);letter-spacing:2px;text-transform:uppercase}
+.hdr-right{display:flex;align-items:center;gap:0.6rem}
+.pi-pill{display:flex;align-items:center;gap:0.35rem;background:var(--pi-dim);
+  border:1px solid rgba(124,58,237,0.3);border-radius:8px;padding:0.3rem 0.65rem;
+  font-size:0.75rem;color:var(--pi2);font-family:monospace}
+.pi-dot{width:6px;height:6px;background:var(--pi2);border-radius:50%;animation:pulse 2s infinite}
+.av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--pi),var(--pi2));
+  display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;
+  color:white;cursor:pointer;border:none;font-family:'Tajawal',sans-serif}
+
+/* TICKER */
+.ticker{background:var(--bg2);border-bottom:1px solid var(--border);overflow:hidden;padding:0.4rem 0}
+.t-track{display:flex;gap:2.5rem;animation:ticker 22s linear infinite;white-space:nowrap;width:max-content}
+.t-item{display:flex;align-items:center;gap:0.4rem;font-size:0.72rem;font-family:monospace;flex-shrink:0}
+.t-up{color:var(--green)}.t-down{color:var(--red)}.t-dim{color:var(--text2)}
+
+/* NAV TABS */
+.nav-tabs{display:flex;gap:0.4rem;padding:1rem 1rem 0.5rem;overflow-x:auto;scrollbar-width:none}
+.nav-tabs::-webkit-scrollbar{display:none}
+.ntab{padding:0.45rem 1rem;border-radius:20px;border:1px solid var(--border);
+  background:transparent;color:var(--text2);font-size:0.82rem;cursor:pointer;
+  font-family:'Tajawal',sans-serif;white-space:nowrap;transition:all 0.15s;flex-shrink:0}
+.ntab.active{background:var(--gold-dim);border-color:var(--gold);color:var(--gold);font-weight:700}
+
+/* HERO */
+.hero{margin:0.75rem 1rem;border-radius:16px;padding:1.75rem 1.5rem;
+  background:linear-gradient(135deg,#0a0a14,#12081e,#080f1a);
+  border:1px solid var(--border);position:relative;overflow:hidden}
+.hero-glow{position:absolute;width:250px;height:250px;border-radius:50%;
+  background:radial-gradient(circle,rgba(124,58,237,0.2) 0%,transparent 70%);
+  left:-60px;top:-60px;pointer-events:none}
+.hero-tag{display:inline-flex;align-items:center;gap:0.4rem;background:var(--pi-dim);
+  border:1px solid rgba(124,58,237,0.3);border-radius:50px;padding:0.25rem 0.75rem;
+  font-size:0.72rem;color:var(--pi2);margin-bottom:0.75rem}
+.hero h1{font-size:1.8rem;font-weight:800;line-height:1.15;margin-bottom:0.6rem}
+.hero h1 span{color:var(--gold)}
+.hero p{color:var(--text2);font-size:0.85rem;line-height:1.6;margin-bottom:1.25rem}
+.hero-btns{display:flex;gap:0.6rem;flex-wrap:wrap}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#060608;
+  border:none;padding:0.6rem 1.25rem;border-radius:10px;font-weight:700;font-size:0.85rem;
+  font-family:'Tajawal',sans-serif;cursor:pointer}
+.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--border);
+  padding:0.6rem 1.25rem;border-radius:10px;font-size:0.85rem;
+  font-family:'Tajawal',sans-serif;cursor:pointer}
+.hero-stats{display:flex;gap:1.5rem;margin-top:1.25rem;padding-top:1rem;
+  border-top:1px solid var(--border)}
+.hs-val{font-size:1.3rem;font-weight:800;color:var(--gold)}
+.hs-lbl{font-size:0.65rem;color:var(--text3)}
+
+/* ADS */
+.ads{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;padding:0 1rem 0.75rem}
+.ad{border-radius:14px;padding:1.25rem;border:1px solid transparent;cursor:pointer;transition:transform 0.2s}
+.ad:hover{transform:translateY(-2px)}
+.ad-pi{background:linear-gradient(135deg,#0d0820,#1a0f30);border-color:rgba(124,58,237,0.3)}
+.ad-teal{background:linear-gradient(135deg,#0a1520,#0d2030);border-color:rgba(45,212,191,0.2)}
+.ad-lbl{font-size:0.6rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:0.3rem;font-weight:600}
+.ad-ttl{font-size:1.1rem;font-weight:700;margin-bottom:0.3rem;line-height:1.2}
+.ad-sub{font-size:0.72rem;color:var(--text2);margin-bottom:0.6rem}
+.ad-btn{font-size:0.72rem;font-weight:700;padding:0.3rem 0.75rem;border-radius:6px;border:none;cursor:pointer;font-family:'Tajawal',sans-serif}
+
+/* SECTION */
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;padding:0.5rem 1rem 0.75rem}
+.sec-ttl{font-size:1.1rem;font-weight:700}
+
+/* PROPERTY CARDS */
+.props{display:flex;flex-direction:column;gap:0.75rem;padding:0 1rem 2rem}
+.pc{background:var(--bg3);border:1px solid var(--border);border-radius:16px;overflow:hidden;cursor:pointer;transition:transform 0.2s,border-color 0.2s}
+.pc:hover{transform:translateY(-2px);border-color:rgba(212,175,106,0.25)}
+.pc.token{border-color:rgba(45,212,191,0.15)}
+.pc-img{height:150px;display:flex;align-items:center;justify-content:center;font-size:3.5rem;position:relative;overflow:hidden}
+.pc-img::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(6,6,8,0.9) 0%,transparent 55%)}
+.pc-badges{position:absolute;top:0.65rem;right:0.65rem;display:flex;gap:0.3rem;z-index:2}
+.pb{padding:0.18rem 0.55rem;border-radius:6px;font-size:0.65rem;font-weight:700;backdrop-filter:blur(8px)}
+.pb-sell{background:rgba(212,175,106,0.85);color:#060608}
+.pb-rent{background:rgba(124,58,237,0.85);color:white}
+.pb-token{background:rgba(45,212,191,0.85);color:#060608}
+.pb-hotel{background:rgba(239,68,68,0.7);color:white}
+.pb-new{background:rgba(16,185,129,0.85);color:white}
+.pc-fav{position:absolute;top:0.65rem;left:0.65rem;z-index:2;width:28px;height:28px;
+  background:rgba(6,6,8,0.6);border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:0.75rem;cursor:pointer;border:none}
+.pc-body{padding:1rem}
+.pc-price{font-size:1.4rem;font-weight:800;color:var(--gold);display:inline}
+.pc-unit{font-size:0.78rem;color:var(--pi2);font-weight:600;margin-right:0.25rem}
+.pc-stars{color:var(--gold);font-size:0.75rem;margin:0.2rem 0}
+.pc-ttl{font-size:0.9rem;font-weight:600;margin:0.25rem 0;line-height:1.3}
+.pc-loc{font-size:0.75rem;color:var(--text3);margin-bottom:0.6rem}
+.pc-feats{display:flex;gap:0.75rem;padding-top:0.65rem;border-top:1px solid var(--border);flex-wrap:wrap}
+.feat{font-size:0.72rem;color:var(--text2)}
+.prog-labels{display:flex;justify-content:space-between;font-size:0.68rem;margin-bottom:0.25rem}
+.prog-bar{height:3px;background:var(--bg4);border-radius:3px;overflow:hidden;margin-bottom:0.5rem}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--teal),#67e8f9);border-radius:3px}
+.rating{display:flex;align-items:center;gap:0.35rem;margin-top:0.4rem}
+.r-num{background:var(--gold-dim);color:var(--gold);font-size:0.7rem;font-weight:700;padding:0.1rem 0.4rem;border-radius:5px}
+.r-txt{font-size:0.7rem;color:var(--text3)}
+
+/* MODAL */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);
+  z-index:2000;display:flex;align-items:flex-end;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity 0.2s}
+.overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--bg3);border:1px solid var(--border);border-radius:20px 20px 0 0;
+  width:100%;max-width:500px;max-height:90vh;overflow-y:auto;padding:1.5rem;
+  transform:translateY(100%);transition:transform 0.3s ease}
+.overlay.open .modal{transform:translateY(0)}
+.modal-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem}
+.modal-ttl{font-size:1.2rem;font-weight:700}
+.modal-close{width:30px;height:30px;background:var(--bg4);border:1px solid var(--border);
+  border-radius:8px;cursor:pointer;color:var(--text2);font-size:1rem;
+  display:flex;align-items:center;justify-content:center}
+.modal-img{height:150px;border-radius:12px;display:flex;align-items:center;
+  justify-content:center;font-size:3.5rem;margin-bottom:1.25rem}
+.modal-price{font-size:1.8rem;font-weight:800;color:var(--gold);margin-bottom:0.25rem}
+.modal-info{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin:1rem 0}
+.ic{background:var(--bg4);border-radius:10px;padding:0.65rem}
+.ic-lbl{font-size:0.65rem;color:var(--text3);margin-bottom:0.15rem}
+.ic-val{font-size:0.85rem;font-weight:600}
+.pay-lbl{font-size:0.7rem;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:0.5rem}
+.pay-opts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.4rem;margin-bottom:1rem}
+.po{border:1px solid var(--border);border-radius:10px;padding:0.6rem 0.3rem;
+  text-align:center;cursor:pointer;transition:all 0.15s;font-size:0.75rem;color:var(--text2)}
+.po:hover,.po.sel{border-color:var(--gold);color:var(--gold);background:var(--gold-dim);font-weight:700}
+.po-icon{font-size:1.1rem;margin-bottom:0.2rem}
+.btn-full{width:100%;padding:0.85rem;border-radius:12px;border:none;font-size:0.95rem;
+  font-weight:700;font-family:'Tajawal',sans-serif;cursor:pointer;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));color:#060608}
+
+/* DASHBOARD SHEET */
+.dash-sheet{background:var(--bg2);border-top:1px solid var(--border);padding:1rem}
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1rem}
+.dash-card{background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:1rem}
+.dc-ttl{font-size:0.62rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:0.75rem;font-weight:600}
+.dc-val{font-size:1.5rem;font-weight:800;color:var(--gold)}
+.dc-lbl{font-size:0.7rem;color:var(--text3)}
+.dc-change{font-size:0.7rem;padding:0.15rem 0.4rem;border-radius:5px;margin-top:0.2rem;display:inline-block}
+.mini-bars{display:flex;align-items:flex-end;gap:2px;height:30px;margin-top:0.5rem}
+.bar{flex:1;background:var(--gold-dim);border-radius:2px 2px 0 0}
+.curr-list{background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:1rem;margin-bottom:0.75rem}
+.ci{display:flex;align-items:center;gap:0.6rem;padding:0.4rem 0;border-bottom:1px solid var(--border)}
+.ci:last-child{border-bottom:none}
+.ci-icon{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;flex-shrink:0}
+.ci-name{font-size:0.8rem;font-weight:600}
+.ci-sym{font-size:0.65rem;color:var(--text3)}
+.ci-price{margin-right:auto;font-family:monospace;font-size:0.72rem;text-align:left}
+.inv-list{background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:1rem;margin-bottom:0.75rem}
+.ii{display:flex;align-items:center;gap:0.6rem;padding:0.35rem 0}
+.ii-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.68rem;font-weight:700;color:white;flex-shrink:0}
+.ii-name{font-size:0.8rem;font-weight:600}
+.ii-amt{font-size:0.65rem;color:var(--gold);font-family:monospace}
+.ii-badge{margin-right:auto;font-size:0.6rem;padding:0.1rem 0.35rem;border-radius:4px;background:var(--gold-dim);color:var(--gold)}
+.lang-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.4rem;background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:1rem}
+.lb{padding:0.4rem;border-radius:8px;border:1px solid var(--border);background:transparent;
+  color:var(--text2);font-size:0.7rem;font-family:'Tajawal',sans-serif;cursor:pointer;text-align:center}
+.lb.active,.lb:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-dim)}
+
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(6,6,8,0.97);
+  backdrop-filter:blur(20px);border-top:1px solid var(--border);
+  display:flex;justify-content:space-around;padding:0.5rem 0 0.75rem;z-index:50}
+.bn{display:flex;flex-direction:column;align-items:center;gap:0.2rem;cursor:pointer;
+  padding:0 1rem;color:var(--text3);font-size:0.65rem;border:none;background:transparent;
+  font-family:'Tajawal',sans-serif;transition:color 0.15s}
+.bn.active{color:var(--gold)}
+.bn-icon{font-size:1.3rem}
+
+/* TOAST */
+.toast{position:fixed;bottom:5rem;left:50%;transform:translateX(-50%);
+  background:var(--bg3);border:1px solid rgba(212,175,106,0.4);color:var(--text);
+  padding:0.65rem 1.25rem;border-radius:50px;font-size:0.82rem;z-index:9999;
+  box-shadow:0 8px 30px rgba(0,0,0,0.5);white-space:nowrap;
+  animation:slideUp 0.3s ease;display:none}
+.toast.show{display:block}
+
+/* SUCCESS */
+.success-box{text-align:center;padding:1rem 0}
+.s-icon{font-size:3rem;margin-bottom:0.75rem}
+.s-ttl{font-size:1.5rem;font-weight:800;color:var(--gold);margin-bottom:0.4rem}
+.txid-box{background:var(--bg4);border-radius:10px;padding:0.75rem;margin:0.75rem 0;
+  font-family:monospace;font-size:0.68rem;color:var(--text2);word-break:break-all}
+
+/* ANIMATIONS */
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div>
+    <div class="logo">RE</div>
+    <div class="logo-sub">Real Estate · Web3</div>
+  </div>
+  <div class="hdr-right">
+    <div class="pi-pill"><div class="pi-dot"></div><span id="piPrice">π $314.15</span></div>
+    <button class="av" id="userAvatar" onclick="piLogin()">👤</button>
+  </div>
+</header>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="t-track" id="ticker"></div>
+</div>
+
+<!-- PAGES -->
+<div id="page-home">
+  <!-- NAV TABS -->
+  <div class="nav-tabs">
+    <button class="ntab active" onclick="filterProps('all',this)">🏠 الكل</button>
+    <button class="ntab" onclick="filterProps('sale',this)">🔑 للبيع</button>
+    <button class="ntab" onclick="filterProps('rent',this)">📋 للإيجار</button>
+    <button class="ntab" onclick="filterProps('hotel',this)">🏨 فنادق</button>
+    <button class="ntab" onclick="filterProps('token',this)">🪙 مُرمَّز</button>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-tag">🌐 منصة عقارات لامركزية على Pi</div>
+    <h1>استثمر، اشترِ،<br>واحجز بعملة <span>Pi</span></h1>
+    <p>منصة RE تجمع العقارات، الفنادق، والترميز في مكان واحد بعملة Pi.</p>
+    <div class="hero-btns">
+      <button class="btn-gold" onclick="filterProps('all',null)">🔍 استكشف</button>
+      <button class="btn-ghost" onclick="filterProps('token',null)">🪙 رمّز عقارك</button>
+    </div>
+    <div class="hero-stats">
+      <div><div class="hs-val">12K+</div><div class="hs-lbl">عقار</div></div>
+      <div><div class="hs-val">4.8K</div><div class="hs-lbl">مستثمر</div></div>
+      <div><div class="hs-val">87</div><div class="hs-lbl">دولة</div></div>
+    </div>
+  </div>
+
+  <!-- ADS -->
+  <div class="ads">
+    <div class="ad ad-pi" onclick="filterProps('token',null)">
+      <div class="ad-lbl" style="color:var(--pi2)">🪙 ترميز</div>
+      <div class="ad-ttl">امتلك حصة في برج دبي</div>
+      <div class="ad-sub">بـ 500 Pi · عائد 14%</div>
+      <button class="ad-btn" style="background:var(--pi-dim);color:var(--pi2)">استثمر ←</button>
+    </div>
+    <div class="ad ad-teal" onclick="filterProps('hotel',null)">
+      <div class="ad-lbl" style="color:var(--teal)">🏨 فنادق</div>
+      <div class="ad-ttl">المالديف بـ Pi</div>
+      <div class="ad-sub">+2000 فندق · خصم 20%</div>
+      <button class="ad-btn" style="background:var(--teal-dim);color:var(--teal)">احجز ←</button>
+    </div>
+  </div>
+
+  <!-- SECTION HEADER -->
+  <div class="sec-hdr">
+    <div class="sec-ttl">🏠 معرض العقارات</div>
+  </div>
+
+  <!-- PROPERTIES -->
+  <div class="props" id="propList"></div>
+</div>
+
+<!-- DASHBOARD PAGE -->
+<div id="page-dash" style="display:none;padding:1rem 1rem 5rem">
+  <div style="font-size:1.2rem;font-weight:700;margin-bottom:1rem">📊 لوحة التحكم</div>
+  <div class="dash-grid">
+    <div class="dash-card">
+      <div class="dc-ttl">استثماراتي</div>
+      <div class="dc-val">48,200</div>
+      <div class="dc-lbl">Pi إجمالي</div>
+      <span class="dc-change up" style="background:rgba(16,185,129,0.15);color:var(--green)">▲ +8.4%</span>
+      <div class="mini-bars">
+        <div class="bar" style="height:40%"></div><div class="bar" style="height:55%"></div>
+        <div class="bar" style="height:70%"></div><div class="bar" style="height:60%"></div>
+        <div class="bar" style="height:85%"></div><div class="bar" style="height:90%"></div>
+        <div class="bar" style="height:100%"></div>
+      </div>
+    </div>
+    <div class="dash-card">
+      <div class="dc-ttl">عقاراتي</div>
+      <div class="dc-val">3</div>
+      <div class="dc-lbl">عقار مُدرج</div>
+      <div style="margin-top:0.5rem;font-size:0.72rem;color:var(--teal)">🪙 2 مُرمَّز</div>
+    </div>
+  </div>
+
+  <div class="curr-list">
+    <div class="dc-ttl" style="padding-bottom:0.5rem">💱 أسعار العملات</div>
+    <div class="ci"><div class="ci-icon" style="background:#7C3AED20;color:#A855F7">π</div><div><div class="ci-name">Pi</div><div class="ci-sym">PI</div></div><div class="ci-price"><div>$314.15</div><div style="color:var(--green)">+2.4%</div></div></div>
+    <div class="ci"><div class="ci-icon" style="background:#f7931a20;color:#f7931a">₿</div><div><div class="ci-name">Bitcoin</div><div class="ci-sym">BTC</div></div><div class="ci-price"><div>$97,450</div><div style="color:var(--red)">-0.8%</div></div></div>
+    <div class="ci"><div class="ci-icon" style="background:#627EEA20;color:#627EEA">Ξ</div><div><div class="ci-name">Ethereum</div><div class="ci-sym">ETH</div></div><div class="ci-price"><div>$3,820</div><div style="color:var(--green)">+1.1%</div></div></div>
+    <div class="ci"><div class="ci-icon" style="background:#26a17b20;color:#26a17b">₮</div><div><div class="ci-name">Tether</div><div class="ci-sym">USDT</div></div><div class="ci-price"><div>$1.00</div><div style="color:var(--text3)">0.0%</div></div></div>
+  </div>
+
+  <div class="inv-list">
+    <div class="dc-ttl" style="padding-bottom:0.5rem">🏆 كبار المستثمرين</div>
+    <div class="ii"><div class="ii-av" style="background:linear-gradient(135deg,#7C3AED,#A855F7)">AM</div><div><div class="ii-name">أحمد محمد</div><div class="ii-amt">1.2M Pi</div></div><span class="ii-badge">👑 VIP</span></div>
+    <div class="ii"><div class="ii-av" style="background:linear-gradient(135deg,#D4AF6A,#F0D090);color:#060608">FK</div><div><div class="ii-name">فاطمة خالد</div><div class="ii-amt">890K Pi</div></div><span class="ii-badge">⭐ Pro</span></div>
+    <div class="ii"><div class="ii-av" style="background:linear-gradient(135deg,#2DD4BF,#67e8f9);color:#060608">SO</div><div><div class="ii-name">سعيد عمر</div><div class="ii-amt">640K Pi</div></div><span class="ii-badge">✅ Verified</span></div>
+  </div>
+
+  <div style="background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:1rem;margin-bottom:1rem">
+    <div class="dc-ttl" style="padding-bottom:0.5rem">⚙️ للمطورين</div>
+    <div class="ii"><span>📡</span><div class="ii-name">RE Public API</div><span style="margin-right:auto;font-size:0.62rem;padding:0.1rem 0.4rem;border-radius:4px;background:var(--teal-dim);color:var(--teal)">API</span></div>
+    <div class="ii"><span>📦</span><div class="ii-name">Pi SDK Integration</div><span style="margin-right:auto;font-size:0.62rem;padding:0.1rem 0.4rem;border-radius:4px;background:var(--pi-dim);color:var(--pi2)">SDK</span></div>
+    <div class="ii"><span>📄</span><div class="ii-name">التوثيق الكامل</div><span style="margin-right:auto;font-size:0.62rem;padding:0.1rem 0.4rem;border-radius:4px;background:var(--gold-dim);color:var(--gold)">DOCS</span></div>
+  </div>
+
+  <div class="lang-grid">
+    <button class="lb active" onclick="setLang(this)">🇸🇦 عربي</button>
+    <button class="lb" onclick="setLang(this)">🇺🇸 EN</button>
+    <button class="lb" onclick="setLang(this)">🇫🇷 FR</button>
+    <button class="lb" onclick="setLang(this)">🇪🇸 ES</button>
+    <button class="lb" onclick="setLang(this)">🇩🇪 DE</button>
+    <button class="lb" onclick="setLang(this)">🇨🇳 中文</button>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="overlay" id="modal" onclick="closeModalOut(event)">
+  <div class="modal" id="modalBox">
+    <div class="modal-hdr">
+      <div class="modal-ttl" id="mTitle">تفاصيل العقار</div>
+      <div class="modal-close" onclick="closeModal()">✕</div>
+    </div>
+    <div class="modal-img" id="mImg">🏢</div>
+    <div class="modal-price" id="mPrice">85,000 <span style="font-size:1rem;color:var(--pi2)">Pi</span></div>
+    <div style="font-size:0.8rem;color:var(--text3);margin-bottom:0.5rem" id="mLoc">📍 القاهرة</div>
+    <div class="modal-info" id="mInfo"></div>
+    <div class="pay-lbl">وسيلة الدفع</div>
+    <div class="pay-opts">
+      <div class="po sel" onclick="selPay(this,0)"><div class="po-icon">🟣</div>Pi</div>
+      <div class="po" onclick="selPay(this,1)"><div class="po-icon">💲</div>USDT</div>
+      <div class="po" onclick="selPay(this,2)"><div class="po-icon">💳</div>كارت</div>
+    </div>
+    <button class="btn-full" id="payBtn">تأكيد الطلب 🔑</button>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="bn active" onclick="showPage('home',this)"><span class="bn-icon">🏠</span>الرئيسية</button>
+  <button class="bn" onclick="showPage('search',this)"><span class="bn-icon">🔍</span>بحث</button>
+  <button class="bn" onclick="showPage('dash',this)"><span class="bn-icon">📊</span>داشبورد</button>
+  <button class="bn" onclick="showPage('fav',this)"><span class="bn-icon">❤️</span>المفضلة</button>
+  <button class="bn" onclick="piLogin()"><span class="bn-icon">👤</span>حسابي</button>
+</nav>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════
+// DATA
+// ══════════════════════════════════
+const props = [
+  {id:'p1',type:'sale',e:'🏢',bg:'linear-gradient(135deg,#1a1a2e,#16213e)',price:'85,000',unit:'Pi',title:'برج النيل — شقة فاخرة',loc:'📍 القاهرة، مصر',feats:['🛏 3 غرف','🚿 2 حمام','📐 150م²'],badges:['sell','new']},
+  {id:'p2',type:'token',e:'🏙️',bg:'linear-gradient(135deg,#071a12,#0d2e1e)',price:'500',unit:'Pi / حصة',title:'برج خليفة — استثمار مشترك',loc:'📍 دبي، الإمارات',feats:['📈 عائد 14%','👥 340 مستثمر'],badges:['token'],prog:72,goal:'2M Pi'},
+  {id:'p3',type:'hotel',e:'🏖️',bg:'linear-gradient(135deg,#1a0d0d,#2e1616)',price:'1,200',unit:'Pi / ليلة',title:'Conrad Maldives',loc:'📍 جزر المالديف',stars:'★★★★★',rating:'9.4',reviews:'1,280 تقييم',badges:['hotel']},
+  {id:'p4',type:'rent',e:'🌆',bg:'linear-gradient(135deg,#0d1a2e,#1a2e4a)',price:'2,800',unit:'Pi / شهر',title:'بنتهاوس على البوسفور',loc:'📍 إسطنبول، تركيا',feats:['🛏 4 غرف','🌊 إطلالة','📐 280م²'],badges:['rent']},
+  {id:'p5',type:'token',e:'🌴',bg:'linear-gradient(135deg,#0a1a12,#122e1e)',price:'250',unit:'Pi / حصة',title:'منتجع شرم الشيخ',loc:'📍 شرم الشيخ، مصر',feats:['📈 عائد 11%','👥 128 مستثمر'],badges:['token','new'],prog:38,goal:'500K Pi'},
+  {id:'p6',type:'sale',e:'🕌',bg:'linear-gradient(135deg,#1a100d,#2e1c14)',price:'320,000',unit:'Pi',title:'قصر تاريخي — مراكش',loc:'📍 مراكش، المغرب',feats:['🛏 8 غرف','🏊 مسبح','📐 900م²'],badges:['sell']},
+];
+
+const tickerData = ['π/USD $314.15 ▲2.4%','BTC $97,450 ▼0.8%','ETH $3,820 ▲1.1%','USDT $1.00','REtoken 2.5π ▲5.2%','Cairo +12% ▲','Dubai +8.5% ▲'];
+
+// ══════════════════════════════════
+// INIT
+// ══════════════════════════════════
+let currentUser = null;
+let currentProp = null;
+let favs = [];
+let currentFilter = 'all';
+
+window.onload = function() {
+  buildTicker();
+  renderProps('all');
+  initPi();
+};
+
+// ══════════════════════════════════
+// TICKER
+// ══════════════════════════════════
+function buildTicker() {
+  const items = [...tickerData,...tickerData].map(t => {
+    const parts = t.split(' ');
+    const isUp = t.includes('▲');
+    const isDown = t.includes('▼');
+    return `<div class="t-item"><span class="t-dim">${parts[0]}</span><span>${parts[1]||''}</span><span class="${isUp?'t-up':isDown?'t-down':''}">${parts[2]||''}</span></div>`;
+  }).join('');
+  document.getElementById('ticker').innerHTML = items;
+}
+
+// ══════════════════════════════════
+// PI SDK
+// ══════════════════════════════════
+function initPi() {
+  if (typeof Pi !== 'undefined') {
+    Pi.init({ version: '2.0', sandbox: false });
+    piLogin();
+  } else {
+    showToast('⚠️ افتح المنصة في Pi Browser');
+  }
+}
+
+async function piLogin() {
+  if (typeof Pi === 'undefined') { showToast('⚠️ يحتاج Pi Browser'); return; }
+  try {
+    const auth = await Pi.authenticate(['username','payments'], onIncompletePayment);
+    currentUser = auth.user;
+    const av = document.getElementById('userAvatar');
+    av.textContent = currentUser.username.substring(0,2).toUpperCase();
+    av.style.background = 'linear-gradient(135deg,#D4AF6A,#F0D090)';
+    av.style.color = '#060608';
+    showToast('🎉 مرحباً ' + currentUser.username + '!');
+  } catch(e) {
+    showToast('⚠️ سجّل الدخول بـ Pi');
+  }
+}
+
+function onIncompletePayment(payment) {
+  console.log('Incomplete payment:', payment);
+}
+
+async function payWithPi() {
+  if (!currentProp) return;
+  if (!currentUser) { showToast('⚠️ سجّل دخولك أولاً'); await piLogin(); return; }
+  const amount = parseFloat(currentProp.price.replace(/,/g,'')) || 100;
+  showToast('⏳ جاري تحضير الدفعة...');
+  try {
+    await Pi.createPayment({
+      amount,
+      memo: 'RE — ' + currentProp.title,
+      metadata: { property_id: currentProp.id, app: 'RE', domain: 're.pi' }
+    }, {
+      onReadyForServerApproval: (paymentId) => {
+        console.log('Approval:', paymentId);
+        showToast('✅ جاري معالجة الدفعة...');
+      },
+      onReadyForServerCompletion: (paymentId, txid) => {
+        closeModal();
+        showSuccessModal(currentProp.title, currentProp.price, txid);
+      },
+      onCancel: () => showToast('🚫 تم إلغاء الدفعة'),
+      onError: (err) => showToast('❌ ' + (err?.message || 'حدث خطأ'))
+    });
+  } catch(e) {
+    showToast('❌ تعذّر إتمام الدفعة');
+  }
+}
+
+// ══════════════════════════════════
+// RENDER PROPERTIES
+// ══════════════════════════════════
+function renderProps(filter) {
+  currentFilter = filter;
+  const list = document.getElementById('propList');
+  const filtered = filter === 'all' ? props : props.filter(p => p.type === filter);
+  list.innerHTML = filtered.map(p => `
+    <div class="pc ${p.type==='token'?'token':''}" onclick="openModal('${p.id}')">
+      <div class="pc-img" style="background:${p.bg}">
+        ${p.e}
+        <div class="pc-badges">
+          ${p.badges.map(b=>`<span class="pb pb-${b}">${b==='sell'?'للبيع':b==='rent'?'للإيجار':b==='token'?'مُرمَّز':b==='hotel'?'فندق':'جديد'}</span>`).join('')}
+        </div>
+        <button class="pc-fav" onclick="toggleFav(event,'${p.id}')">${favs.includes(p.id)?'❤️':'🤍'}</button>
+      </div>
+      <div class="pc-body">
+        <div><span class="pc-price">${p.price}</span> <span class="pc-unit">${p.unit}</span></div>
+        ${p.stars?`<div class="pc-stars">${p.stars}</div>`:''}
+        <div class="pc-ttl">${p.title}</div>
+        <div class="pc-loc">${p.loc}</div>
+        ${p.prog!==undefined?`
+          <div class="prog-labels"><span style="color:var(--teal)">${p.prog}% ممول</span><span style="color:var(--text3)">${p.goal}</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:${p.prog}%"></div></div>
+        `:''}
+        ${p.rating?`<div class="rating"><span class="r-num">${p.rating}</span><span class="r-txt">· ${p.reviews}</span></div>`:''}
+        ${p.feats?`<div class="pc-feats">${p.feats.map(f=>`<span class="feat">${f}</span>`).join('')}</div>`:''}
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterProps(type, btn) {
+  if (btn) {
+    document.querySelectorAll('.ntab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  renderProps(type);
+}
+
+function toggleFav(e, id) {
+  e.stopPropagation();
+  if (favs.includes(id)) favs = favs.filter(x=>x!==id);
+  else favs.push(id);
+  renderProps(currentFilter);
+}
+
+// ══════════════════════════════════
+// MODAL
+// ══════════════════════════════════
+function openModal(id) {
+  currentProp = props.find(p => p.id === id);
+  if (!currentProp) return;
+  document.getElementById('mTitle').textContent = currentProp.title;
+  document.getElementById('mImg').style.background = currentProp.bg;
+  document.getElementById('mImg').textContent = currentProp.e;
+  document.getElementById('mPrice').innerHTML = `${currentProp.price} <span style="font-size:0.9rem;color:var(--pi2)">${currentProp.unit}</span>`;
+  document.getElementById('mLoc').textContent = currentProp.loc;
+  document.getElementById('mInfo').innerHTML = [
+    ['النوع', currentProp.type==='sale'?'للبيع':currentProp.type==='rent'?'للإيجار':currentProp.type==='hotel'?'فندق':'مُرمَّز'],
+    ['الموقع', currentProp.loc?.replace('📍 ','')],
+    ...(currentProp.feats||[]).slice(0,2).map(f=>[f.split(' ')[1]||'',f.split(' ').slice(1).join(' ')])
+  ].slice(0,4).map(([l,v])=>`<div class="ic"><div class="ic-lbl">${l}</div><div class="ic-val">${v}</div></div>`).join('');
+  document.getElementById('payBtn').onclick = payWithPi;
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+function closeModalOut(e) { if(e.target.id==='modal') closeModal(); }
+function selPay(el) { document.querySelectorAll('.po').forEach(p=>p.classList.remove('sel')); el.classList.add('sel'); }
+
+// ══════════════════════════════════
+// SUCCESS MODAL
+// ══════════════════════════════════
+function showSuccessModal(title, amount, txid) {
+  const modal = document.getElementById('modal');
+  const box = document.getElementById('modalBox');
+  box.innerHTML = `
+    <div class="success-box">
+      <div class="s-icon">🎉</div>
+      <div class="s-ttl">تمت الدفعة!</div>
+      <p style="color:var(--text2);margin-bottom:0.75rem">${title}</p>
+      <div class="txid-box">
+        <div style="margin-bottom:0.3rem;color:var(--text3)">المبلغ: <span style="color:var(--gold)">${amount} Pi</span></div>
+        <div>TXID: ${txid?txid.substring(0,35)+'...':'Processing...'}</div>
+      </div>
+      <button class="btn-full" onclick="closeModal();location.reload()">حسناً ✓</button>
+    </div>
+  `;
+  modal.classList.add('open');
+}
+
+// ══════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════
+function showPage(page, btn) {
+  document.querySelectorAll('.bn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  document.getElementById('page-home').style.display = page==='home'?'block':'none';
+  document.getElementById('page-dash').style.display = page==='dash'?'block':'none';
+}
+
+function setLang(btn) {
+  document.querySelectorAll('.lb').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  showToast('🌐 تم تغيير اللغة');
+}
+
+// ══════════════════════════════════
+// TOAST
+// ══════════════════════════════════
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3500);
+}
+</script>
+</body>
+</html>

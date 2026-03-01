@@ -1,0 +1,26 @@
+{
+  "name": "RE — منصة العقارات العالمية",
+  "short_name": "RE",
+  "description": "منصة عقارات عالمية لامركزية على Pi Network",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#060608",
+  "theme_color": "#D4AF6A",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["finance", "business"],
+  "lang": "ar",
+  "dir": "rtl"
+}
